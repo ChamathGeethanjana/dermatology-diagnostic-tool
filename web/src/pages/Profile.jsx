@@ -1,17 +1,44 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
+import {
+  updateUserFailure,
+  updateUserStart,
+  updateUserSuccess,
+} from "../redux//user/userSlice";
 
 export default function Profile() {
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
-  const dispatch = useDispatch();
   const { currentUser, loading, error } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
-  const handleHange = (e) => {
+  const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(updateUserStart());
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(updateUserFailure(data.message));
+        return;
+      }
+      dispatch(updateUserSuccess(data));
+      setUpdateSuccess(true);
+    } catch (error) {
+      dispatch(updateUserFailure(error.message));
+    }
+  };
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
@@ -24,26 +51,44 @@ export default function Profile() {
 
         <input
           type="text"
-          placeholder="username"
-          id="username"
-          defaultValue={currentUser.username}
+          placeholder="firstname"
+          id="firstname"
+          defaultValue={currentUser.firstname}
           className="border p-3 rounded-lg "
-          onChange={handleHange}
+          onChange={handleChange}
         />
+        <input
+          type="text"
+          placeholder="lastname"
+          id="lastname"
+          defaultValue={currentUser.lastname}
+          className="border p-3 rounded-lg "
+          onChange={handleChange}
+        />
+        <select
+          placeholder="role"
+          className="border p-2 rounded-lg"
+          id="role"
+          onChange={handleChange}
+        >
+          <option>{currentUser.role}</option>
+          <option value="Doctor">Doctor</option>
+          <option value="Student">Student</option>
+        </select>
         <input
           type="text"
           placeholder="email"
           id="email"
           defaultValue={currentUser.email}
           className="border p-3 rounded-lg "
-          onChange={handleHange}
+          onChange={handleChange}
         />
         <input
           type="password"
           placeholder="password"
           id="password"
           className="border p-3 rounded-lg "
-          onChange={handleHange}
+          onChange={handleChange}
         />
         <button
           disabled={loading}
@@ -53,15 +98,8 @@ export default function Profile() {
         </button>
       </form>
       <div className="flex justify-between mt-5">
-        <span
-          onClick={handleDeleteUser}
-          className="text-red-700 cursor-pointer"
-        >
-          Delete Account
-        </span>
-        <span onClick={handleSignOut} className="text-red-700 cursor-pointer">
-          Sign out
-        </span>
+        <span className="text-red-700 cursor-pointer">Delete Account</span>
+        <span className="text-red-700 cursor-pointer">Sign out</span>
       </div>
       <p className="text-red-700 my-5">{error ? error : ""}</p>
       <p className="text-green-700 my-5">

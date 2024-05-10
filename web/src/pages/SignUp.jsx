@@ -65,8 +65,8 @@ export default function SignUp() {
           onChange={handleChange}
         >
           <option>select role</option>
-          <option value="doctor">Doctor</option>
-          <option value="student">Student</option>
+          <option value="Doctor">Doctor</option>
+          <option value="Student">Student</option>
         </select>
         <input
           type="email"
