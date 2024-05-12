@@ -9,7 +9,7 @@ import cv2
 
 app = FastAPI()
 
-MODEL = tf.keras.models.load_model("../saved_model/restNet50")  # enter the model path
+MODEL = tf.keras.models.load_model("/home/chamath/projects/dermatology-diagnostic-tool/ai-model/saved_model/restNet50")  # enter the model path
 CLASS_NAMES = ["Eczema", "Psoriasis"]
 
 
