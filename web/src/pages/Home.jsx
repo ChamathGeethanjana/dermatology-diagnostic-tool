@@ -1,10 +1,45 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import image_1 from "../../public/homeImage_1.png";
 
 export default function Home() {
-  const handleImageUpload = () => {
-    console.log("Image Upload");
+  const fileInputRef = useRef(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+
+    // Validate file type
+    const validImageTypes = ["image/jpeg", "image/png", "image/jpg"];
+    if (!validImageTypes.includes(file.type)) {
+      alert("Invalid file type. Please select an image (JPEG or PNG.");
+      return;
+    }
+
+    setSelectedImage(file);
   };
+
+  const handlePredict = async () => {
+    const formData = new FormData();
+    formData.append("file", selectedImage);
+    console.log(formData);
+
+    try {
+      const res = await fetch("http://localhost:8080/predict", {
+        method: "POST",
+        body: formData,
+      });
+      console.log(res);
+      const data = await res.json();
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleImageUpload = () => {
+    fileInputRef.current.click();
+  };
+
   return (
     <div className="relative ... max-w-6xl mx-auto bg-white">
       <img
@@ -19,12 +54,37 @@ export default function Home() {
         <h1 className="mx-5 text-xl sm:text-4xl mt-2 font-semibold text-sky-950">
           Diagnostic Tool
         </h1>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          hidden
+        />
         <button
           onClick={handleImageUpload}
           className="mx-5 mt-6 sm:mt-10 sm:text-xl sm:font-medium bg-sky-500 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-lg shadow-cyan-900/40"
         >
           Upload Skin Image
         </button>
+        <div className="flex flex-col w-3/5 mx-auto p-3.5">
+          {selectedImage && (
+            <img
+              src={URL.createObjectURL(selectedImage)}
+              alt="Uploaded Image"
+            />
+          )}
+          {selectedImage ? (
+            <button
+              onClick={handlePredict}
+              className="mx-5 mt-6 sm:mt-10 sm:text-sm sm:font-medium bg-sky-500 text-white px-2 sm:px-4 py-1 sm:py-3 rounded-lg shadow-lg shadow-cyan-900/40 self-center"
+            >
+              Get Prediction
+            </button>
+          ) : (
+            ""
+          )}
+        </div>
       </div>
     </div>
   );
