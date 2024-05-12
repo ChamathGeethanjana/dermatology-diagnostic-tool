@@ -5,9 +5,19 @@ from io import BytesIO
 from PIL import Image
 import tensorflow as tf
 import cv2
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # add origins
+    allow_credentials=False,
+    allow_methods=["POST"],
+    allow_headers=["*"],
+
+)
 
 MODEL = tf.keras.models.load_model("/home/chamath/projects/dermatology-diagnostic-tool/ai-model/saved_model/restNet50")  # enter the model path
 CLASS_NAMES = ["Eczema", "Psoriasis"]
