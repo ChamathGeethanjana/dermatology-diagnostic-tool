@@ -4,7 +4,7 @@ import image_1 from "../../public/homeImage_1.png";
 export default function Home() {
   const fileInputRef = useRef(null);
   const [selectedImage, setSelectedImage] = useState(null);
-
+  const [result, setResult] = useState(null);
   const handleImageChange = (e) => {
     const file = e.target.files[0];
 
@@ -21,16 +21,15 @@ export default function Home() {
   const handlePredict = async () => {
     const formData = new FormData();
     formData.append("file", selectedImage);
-    console.log(formData);
-
+    // console.log(formData);
     try {
-      const res = await fetch("http://localhost:8080/predict", {
+      const res = await fetch("api/model/predict", {
         method: "POST",
         body: formData,
       });
-      console.log(res);
       const data = await res.json();
       console.log(data);
+      setResult(data.class);
     } catch (error) {
       console.log(error);
     }
@@ -67,22 +66,31 @@ export default function Home() {
         >
           Upload Skin Image
         </button>
-        <div className="flex flex-col w-3/5 mx-auto p-3.5">
+        <div className="flex flex-col w-3/5 mx-auto bg-sky-200 mt-3.5 mb-32 rounded-xl ">
           {selectedImage && (
-            <img
-              src={URL.createObjectURL(selectedImage)}
-              alt="Uploaded Image"
-            />
-          )}
-          {selectedImage ? (
-            <button
-              onClick={handlePredict}
-              className="mx-5 mt-6 sm:mt-10 sm:text-sm sm:font-medium bg-sky-500 text-white px-2 sm:px-4 py-1 sm:py-3 rounded-lg shadow-lg shadow-cyan-900/40 self-center"
-            >
-              Get Prediction
-            </button>
-          ) : (
-            ""
+            <div className="p-10 mx-auto ">
+              {selectedImage && (
+                <img
+                  src={URL.createObjectURL(selectedImage)}
+                  alt="Uploaded Image"
+                />
+              )}
+              {selectedImage && result && (
+                <p className="text-center mt-2 text-slate-700 text-lg">
+                  {result}
+                </p>
+              )}
+              {selectedImage ? (
+                <button
+                  onClick={handlePredict}
+                  className=" mt-6 sm:mt-6 sm:text-sm sm:font-medium bg-sky-500  text-white px-2 sm:px-4 py-1 sm:py-3 rounded-lg shadow-lg shadow-cyan-900/40 self-center"
+                >
+                  Get Prediction
+                </button>
+              ) : (
+                ""
+              )}
+            </div>
           )}
         </div>
       </div>
