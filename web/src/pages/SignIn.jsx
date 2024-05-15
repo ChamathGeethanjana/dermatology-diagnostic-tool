@@ -51,7 +51,7 @@ export default function SignIn() {
     if (!values.email) {
       errors.email = "Email is required!";
     } else if (!regex.test(values.email)) {
-      errors.email = "Enter valid email!";
+      errors.email = "Enter a valid email!";
     }
     if (!values.password) {
       errors.password = "Password is required";
