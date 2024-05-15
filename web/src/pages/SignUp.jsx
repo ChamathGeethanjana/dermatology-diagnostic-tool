@@ -5,6 +5,7 @@ export default function SignUp() {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
   const navigate = useNavigate();
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -12,11 +13,9 @@ export default function SignUp() {
   console.log(formData);
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormErrors(validate(formData));
     try {
-      if (formData.password !== formData["confirm-password"]) {
-        setError("Passwords do not match");
-        return;
-      }
+      setLoading(true);
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
@@ -40,6 +39,38 @@ export default function SignUp() {
     }
   };
 
+  const validate = (values) => {
+    const errors = {};
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+    if (!values.firstname) {
+      errors.firstname = "First name is required!";
+    }
+    if (!values.lastname) {
+      errors.lastname = "Last name is required!";
+    }
+    if (!values.role) {
+      errors.role = "Select a role!";
+    }
+    if (!values.email) {
+      errors.email = "Email is required!";
+    } else if (!regex.test(values.email)) {
+      errors.email = "Enter a valid email.";
+    }
+    if (!values.password) {
+      errors.password = "Password is required";
+    } else if (values.password.length < 4) {
+      errors.password = "Password must be more than 4 characters";
+    } else if (values.password.length > 10) {
+      errors.password = "Password cannot exceed more than 10 characters";
+    }
+    if (!values["confirm-password"]) {
+      errors["confirm-password"] = "Confirm password is required";
+    } else if (values["confirm-password"] !== values.password) {
+      errors["confirm-password"] = "Passwords do not match";
+    }
+    return errors;
+  };
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl text-center font-semibold my-7">Sign Up</h1>
@@ -51,6 +82,7 @@ export default function SignUp() {
           id="firstname"
           onChange={handleChange}
         />
+        <p className="text-red-500">{formErrors.firstname}</p>
         <input
           type="text"
           placeholder="last name"
@@ -58,6 +90,7 @@ export default function SignUp() {
           id="lastname"
           onChange={handleChange}
         />
+        <p className="text-red-500">{formErrors.lastname}</p>
         <select
           placeholder="role"
           className="border p-2 rounded-lg"
@@ -68,6 +101,7 @@ export default function SignUp() {
           <option value="Doctor">Doctor</option>
           <option value="Student">Student</option>
         </select>
+        <p className="text-red-500">{formErrors.role}</p>
         <input
           type="email"
           placeholder="email"
@@ -75,6 +109,7 @@ export default function SignUp() {
           id="email"
           onChange={handleChange}
         />
+        <p className="text-red-500">{formErrors.email}</p>
         <input
           type="password"
           placeholder="password"
@@ -82,6 +117,7 @@ export default function SignUp() {
           id="password"
           onChange={handleChange}
         />
+        <p className="text-red-500">{formErrors.password}</p>
         <input
           type="password"
           placeholder="confirm password"
@@ -89,6 +125,7 @@ export default function SignUp() {
           id="confirm-password"
           onChange={handleChange}
         />
+        <p className="text-red-500">{formErrors["confirm-password"]}</p>
         <button
           disabled={loading}
           className="bg-sky-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
