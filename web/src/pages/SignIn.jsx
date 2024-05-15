@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   signInFailure,
@@ -10,13 +10,19 @@ import {
 export default function SignIn() {
   const [formData, setFormData] = useState({});
   const { loading, error } = useSelector((state) => state.user);
+  const [formErrors, setFormErrors] = useState({});
+  const [isSubmit, setIsSubmit] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormErrors(validate(formData));
+
     try {
       dispatch(signInStart());
       const res = await fetch("/api/auth/signin", {
@@ -38,6 +44,21 @@ export default function SignIn() {
       dispatch(signInFailure(error.messagg));
     }
   };
+
+  const validate = (values) => {
+    const errors = {};
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+    if (!values.email) {
+      errors.email = "Email is required!";
+    } else if (!regex.test(values.email)) {
+      errors.email = "Enter valid email!";
+    }
+    if (!values.password) {
+      errors.password = "Password is required";
+    }
+    return errors;
+  };
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl text-center font-semibold my-7">Sign In</h1>
@@ -49,6 +70,7 @@ export default function SignIn() {
           id="email"
           onChange={handleChange}
         />
+        <p className="text-red-500">{formErrors.email}</p>
         <input
           type="password"
           placeholder="password"
@@ -56,6 +78,7 @@ export default function SignIn() {
           id="password"
           onChange={handleChange}
         />
+        <p className="text-red-500">{formErrors.password}</p>
         <button
           disabled={loading}
           className="bg-sky-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
