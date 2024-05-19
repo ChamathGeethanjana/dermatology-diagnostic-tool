@@ -3,9 +3,10 @@ import cors from "cors";
 import mongoose from "mongoose";
 import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
-import modelRoutes from "./routes/model.route.js";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import { createProxyMiddleware } from "http-proxy-middleware";
+import { verifyToken } from "./utils/verifyUser.js";
 
 dotenv.config();
 
@@ -21,9 +22,7 @@ mongoose
 const app = express();
 
 app.use(cors());
-
 app.use(express.json());
-
 app.use(cookieParser());
 
 app.listen(4000, () => {
@@ -32,7 +31,15 @@ app.listen(4000, () => {
 
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/model", modelRoutes);
+
+// Proxy middleware
+const modelProxy = createProxyMiddleware({
+  target: "http://localhost:8080/predict", // target host with the same base path
+  changeOrigin: true, // needed for virtual hosted sites
+});
+
+// Protected model route
+app.use("/api/predict", verifyToken, modelProxy);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

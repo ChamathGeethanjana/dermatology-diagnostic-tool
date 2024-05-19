@@ -31,13 +31,19 @@ export default function Home() {
     formData.append("file", selectedImage);
     // console.log(formData);
     try {
-      const res = await fetch("http://localhost:8080/predict", {
+      // const res = await fetch("http://localhost:8080/predict", {
+      const modelRes = await fetch("/api/predict", {
         method: "POST",
         body: formData,
       });
-      const data = await res.json();
+      const data = await modelRes.json();
       console.log(data);
-      setResult(data.class);
+      if (data.success === false) {
+        setError(data.message);
+        setloadingPredict(false);
+        return;
+      }
+      setResult(data);
       setloadingPredict(false);
     } catch (error) {
       console.log(error);
@@ -114,7 +120,7 @@ export default function Home() {
 
               {result ? (
                 <p className=" text-slate-700 text-lg text-center">
-                  Disease : {result}
+                  Disease : {result.class}
                 </p>
               ) : error ? (
                 <span className="text-red-600 text-center">{error}</span>
