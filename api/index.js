@@ -34,7 +34,7 @@ app.use("/api/auth", authRoutes);
 
 // Proxy middleware
 const modelProxy = createProxyMiddleware({
-  target: "http://localhost:8080/predict", // target host with the same base path
+  target: `${process.env.MODEL_BASE_URL}/predict`, // target host with the same base path
   changeOrigin: true, // needed for virtual hosted sites
 });
 
