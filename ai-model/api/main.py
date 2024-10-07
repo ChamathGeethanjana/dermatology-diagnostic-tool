@@ -12,14 +12,15 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # add origins
+    allow_origins=["http://ddt-backend-1"], # add origins
     allow_credentials=False,
     allow_methods=["POST"],
     allow_headers=["*"],
 
 )
 
-MODEL = tf.keras.models.load_model("/home/chamath/projects/dermatology-diagnostic-tool/ai-model/saved_model/restNet50")  # enter the model path
+# MODEL = tf.keras.models.load_model("/home/chamath/projects/dermatology-diagnostic-tool/ai-model/saved_model/restNet50")  # enter the model path in local computer
+MODEL = tf.keras.models.load_model("../model_app/saved_model/restNet50")  # enter the model path in docker container
 CLASS_NAMES = ["Eczema", "Psoriasis"]
 
 
@@ -33,7 +34,7 @@ def read_file_as_image(data) -> np.ndarray:
     return image
 
 
-@app.post("/predict")
+@app.post("/predict/")
 async def predict(
         file: UploadFile = File(...)
 ):
