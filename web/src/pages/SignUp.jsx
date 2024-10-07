@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import sign_up_img from "../assets/signup-page-image.png";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({});
@@ -72,74 +73,81 @@ export default function SignUp() {
   };
 
   return (
-    <div className="p-3 max-w-lg mx-auto">
-      <h1 className="text-3xl text-center font-semibold my-7">Sign Up</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <input
-          type="text"
-          placeholder="first name"
-          className="border p-2 rounded-lg"
-          id="firstname"
-          onChange={handleChange}
-        />
-        <p className="text-red-500">{formErrors.firstname}</p>
-        <input
-          type="text"
-          placeholder="last name"
-          className="border p-2 rounded-lg"
-          id="lastname"
-          onChange={handleChange}
-        />
-        <p className="text-red-500">{formErrors.lastname}</p>
-        <select
-          placeholder="role"
-          className="border p-2 rounded-lg"
-          id="role"
-          onChange={handleChange}
-        >
-          <option>select role</option>
-          <option value="Doctor">Doctor</option>
-          <option value="Student">Student</option>
-        </select>
-        <p className="text-red-500">{formErrors.role}</p>
-        <input
-          type="email"
-          placeholder="email"
-          className="border p-2 rounded-lg"
-          id="email"
-          onChange={handleChange}
-        />
-        <p className="text-red-500">{formErrors.email}</p>
-        <input
-          type="password"
-          placeholder="password"
-          className="border p-2 rounded-lg"
-          id="password"
-          onChange={handleChange}
-        />
-        <p className="text-red-500">{formErrors.password}</p>
-        <input
-          type="password"
-          placeholder="confirm password"
-          className="border p-2 rounded-lg"
-          id="confirm-password"
-          onChange={handleChange}
-        />
-        <p className="text-red-500">{formErrors["confirm-password"]}</p>
-        <button
-          disabled={loading}
-          className="bg-sky-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
-        >
-          {loading ? "Loading..." : "Sign Up"}
-        </button>
-      </form>
-      <div className="flex gap-2 mt-5">
-        <p>Have an account?</p>
-        <Link to={"/sign-in"}>
-          <span className="text-blue-700">Sign in</span>
-        </Link>
+    <div className="p-3 max-w-lg mx-auto flex justify-center flex-col sm:flex-row gap-20">
+      <img
+        className="sm:h-[400px] drop-shadow-2xl my-auto p-5"
+        src={sign_up_img}
+        alt="sign up page image"
+      />
+      <div className=" ">
+        <h1 className="text-3xl text-center font-semibold my-7">Sign Up</h1>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <input
+            type="text"
+            placeholder="first name"
+            className="border p-2 rounded-lg"
+            id="firstname"
+            onChange={handleChange}
+          />
+          <p className="text-red-500">{formErrors.firstname}</p>
+          <input
+            type="text"
+            placeholder="last name"
+            className="border p-2 rounded-lg"
+            id="lastname"
+            onChange={handleChange}
+          />
+          <p className="text-red-500">{formErrors.lastname}</p>
+          <select
+            placeholder="role"
+            className="border p-2 rounded-lg"
+            id="role"
+            onChange={handleChange}
+          >
+            <option>select role</option>
+            <option value="Doctor">Doctor</option>
+            <option value="Student">Student</option>
+          </select>
+          <p className="text-red-500">{formErrors.role}</p>
+          <input
+            type="email"
+            placeholder="email"
+            className="border p-2 rounded-lg"
+            id="email"
+            onChange={handleChange}
+          />
+          <p className="text-red-500">{formErrors.email}</p>
+          <input
+            type="password"
+            placeholder="password"
+            className="border p-2 rounded-lg"
+            id="password"
+            onChange={handleChange}
+          />
+          <p className="text-red-500">{formErrors.password}</p>
+          <input
+            type="password"
+            placeholder="confirm password"
+            className="border p-2 rounded-lg"
+            id="confirm-password"
+            onChange={handleChange}
+          />
+          <p className="text-red-500">{formErrors["confirm-password"]}</p>
+          <button
+            disabled={loading}
+            className="bg-sky-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
+          >
+            {loading ? "Loading..." : "Sign Up"}
+          </button>
+        </form>
+        <div className="flex gap-2 mt-5">
+          <p>Have an account?</p>
+          <Link to={"/sign-in"}>
+            <span className="text-blue-700">Sign in</span>
+          </Link>
+        </div>
+        {error && <p className="text-red-500 mt-5">{error}</p>}
       </div>
-      {error && <p className="text-red-500 mt-5">{error}</p>}
     </div>
   );
 }
