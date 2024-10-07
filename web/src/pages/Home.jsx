@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import image_1 from "../../public/homeImage_1.png";
+import image_1 from "../assets/homeImage_1.png";
 
 export default function Home() {
   const fileInputRef = useRef(null);
@@ -31,7 +31,6 @@ export default function Home() {
     formData.append("file", selectedImage);
     // console.log(formData);
     try {
-      // const res = await fetch("http://localhost:8080/predict", {
       const modelRes = await fetch("/api/predict", {
         method: "POST",
         body: formData,
@@ -90,55 +89,57 @@ export default function Home() {
         >
           {loading ? "Loading..." : "Upload Skin Image"}
         </button>
-        <div className="flex flex-col w-3/5 mx-auto bg-sky-200 mt-3.5 mb-32 rounded-xl ">
+        <div>
           {selectedImage && (
-            <div className="p-10 flex flex-col gap-2 relative">
-              <button
-                onClick={closeImage}
-                className="m-3 absolute top-0 right-0 color-slate-700 "
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                  />
-                </svg>
-              </button>
-              <img
-                src={URL.createObjectURL(selectedImage)}
-                alt="Uploaded Image"
-                className="mt-3"
-              />
-
-              {result ? (
-                <p className=" text-slate-700 text-lg text-center">
-                  Disease : {result.class}
-                </p>
-              ) : error ? (
-                <span className="text-red-600 text-center">{error}</span>
-              ) : (
-                ""
-              )}
-
-              {selectedImage ? (
+            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-75">
+              <div className="p-10 flex flex-col gap-2 relative w-3/5 lg:max-w-[600px] mx-auto bg-sky-200 mt-3.5 mb-32 rounded-xl ">
                 <button
-                  disabled={loadingPredict}
-                  onClick={handlePredict}
-                  className=" mt-6 sm:mt-6 sm:text-sm sm:font-medium bg-sky-800  text-white px-2 sm:px-4 py-1 sm:py-3 rounded-lg shadow-lg shadow-cyan-900/40 self-center hover:opacity-95 disabled:opacity-80  "
+                  onClick={closeImage}
+                  className="m-3 absolute top-0 right-0 color-slate-700 "
                 >
-                  {loadingPredict ? "Loading..." : "Predict"}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                    />
+                  </svg>
                 </button>
-              ) : (
-                ""
-              )}
+                <img
+                  src={URL.createObjectURL(selectedImage)}
+                  alt="Uploaded Image"
+                  className="mt-3"
+                />
+
+                {result ? (
+                  <p className=" text-slate-700 text-lg text-center">
+                    Disease : {result.class}
+                  </p>
+                ) : error ? (
+                  <span className="text-red-600 text-center">{error}</span>
+                ) : (
+                  ""
+                )}
+
+                {selectedImage ? (
+                  <button
+                    disabled={loadingPredict}
+                    onClick={handlePredict}
+                    className=" mt-6 sm:mt-6 sm:text-sm sm:font-medium bg-sky-800  text-white px-2 sm:px-4 py-1 sm:py-3 rounded-lg shadow-lg shadow-cyan-900/40 self-center hover:opacity-95 disabled:opacity-80  "
+                  >
+                    {loadingPredict ? "Loading..." : "Predict"}
+                  </button>
+                ) : (
+                  ""
+                )}
+              </div>
             </div>
           )}
         </div>
