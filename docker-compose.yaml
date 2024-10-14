@@ -17,8 +17,8 @@ services:
     ports:
       - 4000:4000
     environment:
-      MONGO: mongodb+srv://ddt:ddt@derm-scan.5ofvuiy.mongodb.net/derm-scan?retryWrites=true&w=majority&appName=derm-scan
-      JWT_SECRET: derm-scan-cgs
+      MONGO:
+      JWT_SECRET:
       MODEL_BASE_URL: http://ddt-model-backend-1:8080
     depends_on:
       - model-backend
