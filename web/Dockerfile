@@ -1,5 +1,5 @@
 #build image
-FROM node:18.20-alpine as BUILD_IMAGE
+from node:18.20-alpine as build_image
 
 #declare build time environment variables
 #ARG SERVER_BASE_URL
@@ -22,14 +22,14 @@ RUN npm run build
 
 
 #production image
-FROM nginx:stable-alpine3.20 as PRODUCTION_IMAGE
+from nginx:stable-alpine3.20 as production_image
 
 WORKDIR /usr/share/nginx/html
 RUN rm -rf *
-COPY --from=BUILD_IMAGE /app/react-app/dist . 
+COPY --from=build_image /app/react-app/dist . 
 
 WORKDIR /etc/nginx/conf.d
-COPY --from=BUILD_IMAGE /app/react-app/nginx-config/default.conf .
+COPY --from=build_image /app/react-app/nginx-config/default.conf .
 
 WORKDIR /usr/share/nginx/html
 
